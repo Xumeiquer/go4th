@@ -1,4 +1,4 @@
-module github.com/Xumeiquer/go4TheHive
+module github.com/Xumeiquer/go4th
 
 require (
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect

@@ -3,10 +3,13 @@ package go4th
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/k0kubun/pp"
 )
 
 // API defines the methods to exchenge information between clinet and The Hive
@@ -23,6 +26,9 @@ func NewAPI(baseURL, apiKey string) *API {
 	if err != nil {
 		panic("bad base url")
 	}
+	if apiKey == "" {
+		panic("bad apikey")
+	}
 	api := &API{
 		baseURL:    u,
 		userAgent:  userAgent,
@@ -35,6 +41,9 @@ func NewAPI(baseURL, apiKey string) *API {
 func (api *API) newRequest(method, path string, body interface{}) (*http.Request, error) {
 	rel := &url.URL{Path: path}
 	u := api.baseURL.ResolveReference(rel)
+	fmt.Println("--------------")
+	pp.Println(body)
+	fmt.Println("--------------")
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)
@@ -59,13 +68,12 @@ func (api *API) newRequest(method, path string, body interface{}) (*http.Request
 func (api *API) do(req *http.Request) (*http.Response, []byte, error) {
 	resp, err := api.httpClient.Do(req)
 	if err != nil {
-		return nil, nil, err
+		return resp, nil, err
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 
-	// err = json.NewDecoder(resp.Body).Decode(v)
-	return nil, data, err
+	return resp, data, err
 }
 
 var userAgent = "go4th/1.0"
@@ -89,3 +97,8 @@ const (
 	Ignored  AlertStatus = "Ignored"
 	Imported AlertStatus = "Imported"
 )
+
+type ApiError struct {
+	Type    string `json:"type"`
+	Message string `json:"type"`
+}
