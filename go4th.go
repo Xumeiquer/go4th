@@ -3,13 +3,10 @@ package go4th
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"github.com/k0kubun/pp"
 )
 
 // API defines the methods to exchenge information between clinet and The Hive
@@ -41,9 +38,6 @@ func NewAPI(baseURL, apiKey string) *API {
 func (api *API) newRequest(method, path string, body interface{}) (*http.Request, error) {
 	rel := &url.URL{Path: path}
 	u := api.baseURL.ResolveReference(rel)
-	fmt.Println("--------------")
-	pp.Println(body)
-	fmt.Println("--------------")
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)

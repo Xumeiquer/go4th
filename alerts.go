@@ -1,8 +1,9 @@
 package go4th
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"gopkg.in/oleiade/reflections.v1"
 )
 
 type Alert struct {
@@ -102,12 +103,8 @@ func (api *API) GetAlerts() ([]Alert, error) {
 	if err != nil {
 		return nil, err
 	}
-	var alerts []Alert
-	var buff []byte
-	_, buff, err = api.do(req)
 
-	err = json.Unmarshal(buff, &alerts)
-	return alerts, err
+	return api.readResponseAsAlerts(req)
 }
 
 func (api *API) GetAlert(id string) (Alert, error) {
@@ -120,12 +117,8 @@ func (api *API) GetAlert(id string) (Alert, error) {
 	if err != nil {
 		return Alert{}, err
 	}
-	var alert Alert
-	var buff []byte
-	_, buff, err = api.do(req)
 
-	err = json.Unmarshal(buff, &alert)
-	return alert, err
+	return api.readResponseAsAlert(req)
 }
 
 func (api *API) CreateAlert(alert *Alert) (Alert, error) {
@@ -135,99 +128,18 @@ func (api *API) CreateAlert(alert *Alert) (Alert, error) {
 		return Alert{}, err
 	}
 
-	var alertRes Alert
-	var buff []byte
-	_, buff, err = api.do(req)
-
-	err = json.Unmarshal(buff, &alertRes)
-	if err != nil {
-		var apiError ApiError
-		err = json.Unmarshal(buff, &apiError)
-		if err != nil {
-			return Alert{}, err
-		}
-		return Alert{}, fmt.Errorf("%s::%s", apiError.Type, apiError.Message)
-	}
-	return alertRes, err
+	return api.readResponseAsAlert(req)
 }
 
-func (api *API) UpdateAlert(id string, alert *Alert, fields []string) (Alert, error) {
+func (api *API) UpdateAlert(id string, values map[string]interface{}) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
 	}
 
 	newAlert := NewAlert()
-	for _, field := range fields {
-		if in(field, updateKeys) {
-			switch field {
-			case "TLP":
-				if alert.TLP != 0 {
-					newAlert.TLP = alert.TLP
-				}
-			case "Severity":
-				if alert.Severity != 0 {
-					newAlert.Severity = alert.Severity
-				}
-			case "Tags":
-				if len(alert.Tags) != 0 {
-					newAlert.Tags = alert.Tags
-				}
-			case "CaseTemplate":
-				if alert.CaseTemplate != "" {
-					newAlert.CaseTemplate = alert.CaseTemplate
-				}
-			case "Title":
-				if alert.Title != "" {
-					newAlert.Title = alert.Title
-				}
-			case "Description":
-				if alert.Description != "" {
-					newAlert.Description = alert.Description
-				}
-			}
-		}
-	}
-
-	for _, field := range fields {
-		if in(field, keys) {
-			switch field {
-			case "Date":
-				if alert.Date != 0 {
-					newAlert.Date = alert.Date
-				}
-			case "Status":
-				if alert.Status != "" {
-					newAlert.Status = alert.Status
-				}
-			case "Follow":
-				if alert.Follow != newAlert.Follow {
-					newAlert.Follow = alert.Follow
-				}
-			case "LastSyncDate":
-				if alert.LastSyncDate != 0 {
-					newAlert.LastSyncDate = alert.LastSyncDate
-				}
-			case "Case":
-				if alert.Case != "" {
-					newAlert.Case = alert.Case
-				}
-			case "CreatedBy":
-				if alert.CreatedBy != "" {
-					newAlert.CreatedBy = alert.CreatedBy
-				}
-			case "CreatedAt":
-				if alert.CreatedAt != 0 {
-					newAlert.CreatedAt = alert.CreatedAt
-				}
-			case "UpdatedBy":
-				if alert.UpdatedBy != "" {
-					newAlert.UpdatedBy = alert.UpdatedBy
-				}
-			case "User":
-				if alert.User != "" {
-					newAlert.User = alert.User
-				}
-			}
+	for field, value := range values {
+		if in(field, updateKeys) || !in(field, keys) {
+			reflections.SetField(newAlert, field, value)
 		}
 	}
 
@@ -237,18 +149,77 @@ func (api *API) UpdateAlert(id string, alert *Alert, fields []string) (Alert, er
 		return Alert{}, err
 	}
 
-	var alertRes Alert
-	var buff []byte
-	_, buff, err = api.do(req)
+	return api.readResponseAsAlert(req)
+}
 
-	err = json.Unmarshal(buff, &alertRes)
-	if err != nil {
-		var apiError ApiError
-		err = json.Unmarshal(buff, &apiError)
-		if err != nil {
-			return Alert{}, err
-		}
-		return Alert{}, fmt.Errorf("%s::%s", apiError.Type, apiError.Message)
+func (api *API) DeleteAlert(id string) error {
+	if id == "" {
+		return fmt.Errorf("id must be provided")
 	}
-	return alertRes, err
+	path := "/api/alert/" + id
+	_, err := api.newRequest("DELETE", path, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (api *API) ReadAlert(id string) (Alert, error) {
+	if id == "" {
+		return Alert{}, fmt.Errorf("id must be provided")
+	}
+	path := "/api/alert/" + id + "/markAsRead"
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Alert{}, err
+	}
+	return api.readResponseAsAlert(req)
+}
+
+func (api *API) UnreadAlert(id string) (Alert, error) {
+	if id == "" {
+		return Alert{}, fmt.Errorf("id must be provided")
+	}
+	path := "/api/alert/" + id + "/markAsUnread"
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Alert{}, err
+	}
+	return api.readResponseAsAlert(req)
+}
+
+func (api *API) AlertToCase(id string) (Alert, error) {
+	if id == "" {
+		return Alert{}, fmt.Errorf("id must be provided")
+	}
+	path := "/api/alert/" + id + "/createCase"
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Alert{}, err
+	}
+	return api.readResponseAsAlert(req)
+}
+
+func (api *API) FollowAlert(id string) (Alert, error) {
+	if id == "" {
+		return Alert{}, fmt.Errorf("id must be provided")
+	}
+	path := "/api/alert/" + id + "/follow"
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Alert{}, err
+	}
+	return api.readResponseAsAlert(req)
+}
+
+func (api *API) UnfollowAlert(id string) (Alert, error) {
+	if id == "" {
+		return Alert{}, fmt.Errorf("id must be provided")
+	}
+	path := "/api/alert/" + id + "/unfollow"
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Alert{}, err
+	}
+	return api.readResponseAsAlert(req)
 }

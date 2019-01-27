@@ -9,3 +9,5 @@ github.com/mattn/go-isatty v0.0.4 h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs
 github.com/mattn/go-isatty v0.0.4/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 golang.org/x/sys v0.0.0-20190124100055-b90733256f2e h1:3GIlrlVLfkoipSReOMNAgApI0ajnalyLa/EZHHca/XI=
 golang.org/x/sys v0.0.0-20190124100055-b90733256f2e/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+gopkg.in/oleiade/reflections.v1 v1.0.0 h1:nV9NFaFd5bXKjilVvPvA+/V/tNQk1pOEEc9gGWDkj+s=
+gopkg.in/oleiade/reflections.v1 v1.0.0/go.mod h1:SpA8pv+LUnF0FbB2hyRxc8XSng78D6iLBZ11PDb8Z5g=
