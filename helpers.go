@@ -15,15 +15,20 @@ func in(s string, ls []string) bool {
 	return false
 }
 
+// Updater is a map of Alert fields:valeus and it is used for updating alerts
 type Updater map[string]interface{}
 
+// NewUpdater retuens a new and empty Updater
 func NewUpdater() Updater {
 	return Updater{}
 }
+
+// Add adds entries into the map
 func (u Updater) Add(field string, value interface{}) {
 	u[field] = value
 }
 
+// Del deletes entries from the map
 func (u Updater) Del(field string, value interface{}) {
 	delete(u, field)
 }

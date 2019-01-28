@@ -6,6 +6,7 @@ import (
 	"gopkg.in/oleiade/reflections.v1"
 )
 
+// Alert is the data model for an alert.
 type Alert struct {
 	ID           string      `json:"id,omitempty"`
 	IDdb         string      `json:"_id,omitempty"`
@@ -36,6 +37,7 @@ type Alert struct {
 	User         string      `json:"user,omitempty"`
 }
 
+// NewAlert generates an empty alert with the required fields filled with its defaults
 func NewAlert() *Alert {
 	var alert *Alert
 	alert = new(Alert)
@@ -46,13 +48,17 @@ func NewAlert() *Alert {
 	return alert
 }
 
-var updateKeys = []string{"TLP", "Severity", "Tags", "CaseTemplate", "Title", "Description"}
-var keys = []string{"Date", "Status", "Follow", "LastSyncDate", "Case", "CreatedBy", "CreatedAt", "UpdatedBy", "User"}
+var updateKeys = []string{"TLP", "Severity", "Tags",
+	"CaseTemplate", "Title", "Description"}
+
+var keys = []string{"Date", "Status", "Follow", "LastSyncDate",
+	"Case", "CreatedBy", "CreatedAt", "UpdatedBy", "User"}
 
 /*
 	Alert methods
 */
 
+// SetTitle sets alert's title. Title couldn't be an empty string, otherwise an error will be returned
 func (a *Alert) SetTitle(t string) error {
 	if t != "" {
 		a.Title = t
@@ -61,14 +67,17 @@ func (a *Alert) SetTitle(t string) error {
 	return fmt.Errorf("title could not be empty")
 }
 
-func (a *Alert) SetDescription(t string) error {
-	if t != "" {
-		a.Description = t
+// SetDescription sets alert's description. Description couldn't be an empty string,
+// otherwise an error will be returned
+func (a *Alert) SetDescription(d string) error {
+	if d != "" {
+		a.Description = d
 		return nil
 	}
 	return fmt.Errorf("description could not be empty")
 }
 
+// SetType sets alert's type. Type couldn't be an empty string, otherwise an error will be returned
 func (a *Alert) SetType(t string) error {
 	if t != "" {
 		a.Type = t
@@ -77,17 +86,20 @@ func (a *Alert) SetType(t string) error {
 	return fmt.Errorf("type could not be empty")
 }
 
-func (a *Alert) SetSource(src string) error {
-	if src != "" {
-		a.Source = src
+// SetSource sets alert's source. Source couldn't be an empty string, otherwise an error will be returned
+func (a *Alert) SetSource(s string) error {
+	if s != "" {
+		a.Source = s
 		return nil
 	}
 	return fmt.Errorf("source could not be empty")
 }
 
-func (a *Alert) SetSourceRef(src string) error {
-	if src != "" {
-		a.SourceRef = src
+// SetSourceRef sets alert's sourceRef. SourceRef couldn't be an empty string,
+// otherwise an error will be returned
+func (a *Alert) SetSourceRef(sr string) error {
+	if sr != "" {
+		a.SourceRef = sr
 		return nil
 	}
 	return fmt.Errorf("sourceRef could not be empty")
@@ -97,6 +109,8 @@ func (a *Alert) SetSourceRef(src string) error {
 	API Calls
 */
 
+// GetAlerts gets the whole list of alerts. GetAlerts returns a list of Alert or an empty
+// list. It can also return an error.
 func (api *API) GetAlerts() ([]Alert, error) {
 	path := "/api/alert"
 	req, err := api.newRequest("GET", path, nil)
@@ -107,6 +121,9 @@ func (api *API) GetAlerts() ([]Alert, error) {
 	return api.readResponseAsAlerts(req)
 }
 
+// GetAlert gets an specific alert. The alert ID must be provided in terms to get the alert.
+// If there is an error, an empty Alert will be returned, otherwise the alert is returned with
+// nil error.
 func (api *API) GetAlert(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -121,6 +138,9 @@ func (api *API) GetAlert(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// CreateAlert creates an alert. An alert must be provided as parameter it also needs to have
+// the required fields filled. Returns the same alert with ID number and same extra information.
+// If any error is produced while creating the alert, that error will be returned.
 func (api *API) CreateAlert(alert *Alert) (Alert, error) {
 	path := "/api/alert"
 	req, err := api.newRequest("POST", path, alert)
@@ -131,6 +151,10 @@ func (api *API) CreateAlert(alert *Alert) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// UpdateAlert updates the alert information. The alert ID must me provided as well as
+// a map of fields:values that are going to be updated. The fileds couldn't be the ones
+// that are readonly and they must be defined in the Alert type. The alert with its fields
+// updated is returned, or an empty alert with an error will do it instead
 func (api *API) UpdateAlert(id string, values map[string]interface{}) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -152,6 +176,8 @@ func (api *API) UpdateAlert(id string, values map[string]interface{}) (Alert, er
 	return api.readResponseAsAlert(req)
 }
 
+// DeleteAlert deletes and alert. The alert ID must be provided. If ID is empty string, an error
+// will be returned, otherwise if everything goes well, no error will be returned.
 func (api *API) DeleteAlert(id string) error {
 	if id == "" {
 		return fmt.Errorf("id must be provided")
@@ -164,6 +190,8 @@ func (api *API) DeleteAlert(id string) error {
 	return nil
 }
 
+// ReadAlert marks an alert as read. The alert ID must be provied and the modified alert is returned.
+// If alert ID is empty or there is any other, it is returned.
 func (api *API) ReadAlert(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -176,6 +204,8 @@ func (api *API) ReadAlert(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// UnreadAlert marks an alert as unread. The alert ID must be provied and the modified alert is returned.
+// If alert ID is empty or there is any other, it is returned.
 func (api *API) UnreadAlert(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -188,6 +218,8 @@ func (api *API) UnreadAlert(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// AlertToCase converts an alert to a case. The alert ID must be provided. If the alert ID is
+// empty an error is returned. If everything was ok, the returned alert is the alert converted to case.
 func (api *API) AlertToCase(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -200,6 +232,8 @@ func (api *API) AlertToCase(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// FollowAlert switchs Follow field to true. The alert ID must be provied otherwise an error
+// is returned.
 func (api *API) FollowAlert(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
@@ -212,6 +246,8 @@ func (api *API) FollowAlert(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
+// UnfollowAlert switchs Follow field to false. The alert ID must be provied otherwise an error
+// is returned.
 func (api *API) UnfollowAlert(id string) (Alert, error) {
 	if id == "" {
 		return Alert{}, fmt.Errorf("id must be provided")
