@@ -8,22 +8,47 @@ import (
 	"time"
 )
 
-func TestSetTitle(t *testing.T) {
-	alert := NewAlert()
-	title := "test"
+var globalID = "ff7116c6c1f125a5d50c134139099a618fd54408"
+var apiKey = "cd7c97854e86bdb07ebe49a0bd6b4da849a5f8d2"
+var user = "admin"
+var newAlertHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var alert *Alert
+	err := json.NewDecoder(r.Body).Decode(&alert)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	alert = NewAlert()
+	alert.ID = globalID
+	alert.CreatedBy = user
+	alert.UpdatedBy = user
+	alert.Date = time.Now().Unix()
+	alert.CreatedAt = time.Now().Unix()
+	alert.UpdatedAt = time.Now().Unix()
+	alert.LastSyncDate = time.Now().Unix()
 
-	if alert.Title != "" {
-		t.Errorf("expected title to be empty, but found %s", alert.Title)
+	data, err := json.Marshal(alert)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	alert.SetTitle(title)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+})
 
-	if alert.Title != title {
-		t.Errorf("expected title to be %s, but found %s", title, alert.Title)
-	}
+func newAlert() *Alert {
+	initialAlert := NewAlert()
+	initialAlert.SetTitle("Test Alert")
+	initialAlert.SetDescription("Desciption for a test alert")
+	initialAlert.SetSourceRef("qweqwe")
+	initialAlert.SetSource("Golang")
+	initialAlert.SetType("alert")
+	return initialAlert
 }
 
-func TestSetTitleEmpty(t *testing.T) {
+func TestSetTitle(t *testing.T) {
 	alert := NewAlert()
 	title := ""
 
@@ -36,24 +61,21 @@ func TestSetTitleEmpty(t *testing.T) {
 	if err.Error() != "title could not be empty" {
 		t.Errorf("expected error title could not be empty, but found %s", err.Error())
 	}
+
+	title = "test"
+
+	if alert.Title != "" {
+		t.Errorf("expected title to be empty, but found %s", alert.Title)
+	}
+
+	alert.SetTitle(title)
+
+	if alert.Title != title {
+		t.Errorf("expected title to be %s, but found %s", title, alert.Title)
+	}
 }
 
 func TestSetDescription(t *testing.T) {
-	alert := NewAlert()
-	description := "test"
-
-	if alert.Description != "" {
-		t.Errorf("expected description to be empty, but found %s", alert.Description)
-	}
-
-	alert.SetDescription(description)
-
-	if alert.Description != description {
-		t.Errorf("expected description to be %s, but found %s", description, alert.Description)
-	}
-}
-
-func TestSetDescriptionEmpty(t *testing.T) {
 	alert := NewAlert()
 	description := ""
 
@@ -66,24 +88,21 @@ func TestSetDescriptionEmpty(t *testing.T) {
 	if err.Error() != "description could not be empty" {
 		t.Errorf("expected error description could not be empty, but found %s", err.Error())
 	}
+
+	description = "test"
+
+	if alert.Description != "" {
+		t.Errorf("expected description to be empty, but found %s", alert.Description)
+	}
+
+	alert.SetDescription(description)
+
+	if alert.Description != description {
+		t.Errorf("expected description to be %s, but found %s", description, alert.Description)
+	}
 }
 
 func TestSetType(t *testing.T) {
-	alert := NewAlert()
-	typ := "test"
-
-	if alert.Type != "" {
-		t.Errorf("expected typ to be empty, but found %s", alert.Type)
-	}
-
-	alert.SetType(typ)
-
-	if alert.Type != typ {
-		t.Errorf("expected typ to be %s, but found %s", typ, alert.Type)
-	}
-}
-
-func TestSetTypeEmpty(t *testing.T) {
 	alert := NewAlert()
 	typ := ""
 
@@ -96,24 +115,21 @@ func TestSetTypeEmpty(t *testing.T) {
 	if err.Error() != "type could not be empty" {
 		t.Errorf("expected error typ could not be empty, but found %s", err.Error())
 	}
+
+	typ = "test"
+
+	if alert.Type != "" {
+		t.Errorf("expected typ to be empty, but found %s", alert.Type)
+	}
+
+	alert.SetType(typ)
+
+	if alert.Type != typ {
+		t.Errorf("expected typ to be %s, but found %s", typ, alert.Type)
+	}
 }
 
 func TestSetSource(t *testing.T) {
-	alert := NewAlert()
-	source := "test"
-
-	if alert.Source != "" {
-		t.Errorf("expected source to be empty, but found %s", alert.Source)
-	}
-
-	alert.SetSource(source)
-
-	if alert.Source != source {
-		t.Errorf("expected source to be %s, but found %s", source, alert.Source)
-	}
-}
-
-func TestSetSourceEmpty(t *testing.T) {
 	alert := NewAlert()
 	source := ""
 
@@ -126,24 +142,21 @@ func TestSetSourceEmpty(t *testing.T) {
 	if err.Error() != "source could not be empty" {
 		t.Errorf("expected error source could not be empty, but found %s", err.Error())
 	}
+
+	source = "test"
+
+	if alert.Source != "" {
+		t.Errorf("expected source to be empty, but found %s", alert.Source)
+	}
+
+	alert.SetSource(source)
+
+	if alert.Source != source {
+		t.Errorf("expected source to be %s, but found %s", source, alert.Source)
+	}
 }
 
 func TestSetSourceRef(t *testing.T) {
-	alert := NewAlert()
-	sourceRef := "test"
-
-	if alert.SourceRef != "" {
-		t.Errorf("expected sourceRef to be empty, but found %s", alert.SourceRef)
-	}
-
-	alert.SetSourceRef(sourceRef)
-
-	if alert.SourceRef != sourceRef {
-		t.Errorf("expected sourceRef to be %s, but found %s", sourceRef, alert.SourceRef)
-	}
-}
-
-func TestSetSourceRefEmpty(t *testing.T) {
 	alert := NewAlert()
 	sourceRef := ""
 
@@ -156,23 +169,67 @@ func TestSetSourceRefEmpty(t *testing.T) {
 	if err.Error() != "sourceRef could not be empty" {
 		t.Errorf("expected error sourceRef could not be empty, but found %s", err.Error())
 	}
+
+	sourceRef = "test"
+
+	if alert.SourceRef != "" {
+		t.Errorf("expected sourceRef to be empty, but found %s", alert.SourceRef)
+	}
+
+	alert.SetSourceRef(sourceRef)
+
+	if alert.SourceRef != sourceRef {
+		t.Errorf("expected sourceRef to be %s, but found %s", sourceRef, alert.SourceRef)
+	}
+}
+
+func TestGetAlert(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			t.Errorf("expected GET method, but found %s", r.Method)
+		}
+		if r.URL.Path != "/api/alert/"+globalID {
+			t.Errorf("expected path to be /api/alert/%s, but found %s", globalID, r.URL.Path)
+		}
+		if len(r.Header["Accept"]) >= 1 {
+			if r.Header["Accept"][0] != "application/json" {
+				t.Errorf("expected Accept to be application/json, but found %s", r.Header["Accept"][0])
+			}
+		} else {
+			t.Errorf("expected at least one Accept header, none was found")
+		}
+
+		alertCase := NewAlert()
+		alertCase.ID = globalID
+
+		data, err := json.Marshal(alertCase)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
+	}))
+	defer ts.Close()
+
+	api := NewAPI(ts.URL, apiKey)
+	alert, err := api.GetAlert(globalID)
+	if err != nil {
+		t.Errorf("unexpected error %s", err.Error())
+	}
+	if alert.ID != globalID {
+		t.Errorf("expected %s as ID, but found %s", globalID, alert.ID)
+	}
+
+	_, err = api.GetAlert("")
+	if err.Error() != "id must be provided" {
+		t.Errorf("expected error to be id must be provided, but found %s", err.Error())
+	}
 }
 
 func TestGetAlerts(t *testing.T) {
-	alertsCase := []Alert{Alert{
-		Title:       "Alert test",
-		Description: "Alert description",
-		Severity:    1,
-		Date:        time.Now().Unix(),
-		Tags:        []string{},
-		TLP:         Green,
-		Status:      New,
-		Type:        "test",
-		Source:      "test",
-		SourceRef:   "test",
-		Artifacts:   nil,
-		Follow:      true,
-	}}
+	alertsCase := []Alert{Alert{}, Alert{}}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			t.Errorf("expected GET method, but found %s", r.Method)
@@ -180,15 +237,8 @@ func TestGetAlerts(t *testing.T) {
 		if r.URL.Path != "/api/alert" {
 			t.Errorf("expected path to be /api/alert, but found %s", r.URL.Path)
 		}
-		if len(r.Header["Accept"]) >= 1 {
-			if r.Header["Accept"][0] != "application/json" {
-				t.Errorf("expected Accept to be application/json, but found %s", r.Header["Accept"][0])
-			}
-		} else {
-			t.Errorf("expected at least one Accept header, none was found")
-		}
-		data, err := json.Marshal(alertsCase)
 
+		data, err := json.Marshal(alertsCase)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -199,90 +249,19 @@ func TestGetAlerts(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, "123-123-123")
+	api := NewAPI(ts.URL, apiKey)
 
 	alerts, err := api.GetAlerts()
 	if err != nil {
 		t.Errorf("unexpected error %s", err.Error())
 	}
 
-	if len(alerts) != 1 {
+	if len(alerts) != len(alertsCase) {
 		t.Errorf("expecting %d alerts, but found %d", len(alertsCase), len(alerts))
 	}
 }
 
-func TestGetAlert(t *testing.T) {
-	ID := "123-123-123-123"
-	alertCase := Alert{
-		ID:          ID,
-		Title:       "Alert test",
-		Description: "Alert description",
-		Severity:    1,
-		Date:        time.Now().Unix(),
-		Tags:        []string{},
-		TLP:         Green,
-		Status:      New,
-		Type:        "test",
-		Source:      "test",
-		SourceRef:   "test",
-		Artifacts:   nil,
-		Follow:      true,
-	}
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			t.Errorf("expected GET method, but found %s", r.Method)
-		}
-		if r.URL.Path != "/api/alert/123-123-123-123" {
-			t.Errorf("expected path to be /api/alert/123-123-123-123, but found %s", r.URL.Path)
-		}
-		if len(r.Header["Accept"]) >= 1 {
-			if r.Header["Accept"][0] != "application/json" {
-				t.Errorf("expected Accept to be application/json, but found %s", r.Header["Accept"][0])
-			}
-		} else {
-			t.Errorf("expected at least one Accept header, none was found")
-		}
-
-		data, err := json.Marshal(alertCase)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
-	defer ts.Close()
-
-	api := NewAPI(ts.URL, "123-123-123")
-	alert, err := api.GetAlert(ID)
-	if err != nil {
-		t.Errorf("unexpected error %s", err.Error())
-	}
-
-	if alert.ID != ID {
-		t.Errorf("expected %s as ID, but found %s", ID, alert.ID)
-	}
-}
-
-func TestGetAlertEmpyID(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
-	api := NewAPI(ts.URL, "123-123-123")
-	_, err := api.GetAlert("")
-	if err.Error() != "id must be provided" {
-		t.Errorf("expected error to be id must be provided, but found %s", err.Error())
-	}
-}
-
 func TestCreateAlert(t *testing.T) {
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
-
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
@@ -304,38 +283,22 @@ func TestCreateAlert(t *testing.T) {
 		} else {
 			t.Errorf("expected at least one Content-Type header, none was found")
 		}
-		var alert Alert
+
+		var alert *Alert
 		err := json.NewDecoder(r.Body).Decode(&alert)
 		if err != nil {
 			t.Errorf("unexpected error %s", err.Error())
 		}
-
-		if alert.Title != "Test Alert" {
-			t.Errorf("expecting alert title to be Test Alert, but found %s", alert.Title)
-		}
-		if alert.Description != "Desciption for a test alert" {
-			t.Errorf("expecting alert description to be Desciption for a test alert, but found %s", alert.Description)
-		}
-		if alert.SourceRef != "qweqwe" {
-			t.Errorf("expecting alert sourceRef to be qweqwe, but found %s", alert.SourceRef)
-		}
-		if alert.Source != "Golang" {
-			t.Errorf("expecting alert source to be Golang, but found %s", alert.Source)
-		}
-		if alert.Type != "alert" {
-			t.Errorf("expecting alert type to be alert, but found %s", alert.Type)
-		}
-
-		alert.ID = "123-123-123"
-		alert.CreatedBy = "admin"
-		alert.UpdatedBy = "admin"
+		alert = NewAlert()
+		alert.ID = globalID
+		alert.CreatedBy = user
+		alert.UpdatedBy = user
 		alert.Date = time.Now().Unix()
 		alert.CreatedAt = time.Now().Unix()
 		alert.UpdatedAt = time.Now().Unix()
 		alert.LastSyncDate = time.Now().Unix()
 
 		data, err := json.Marshal(alert)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -346,8 +309,10 @@ func TestCreateAlert(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, "123-123-123")
-	alert, err := api.CreateAlert(alertCase)
+	api := NewAPI(ts.URL, apiKey)
+
+	initialAlert := newAlert()
+	alert, err := api.CreateAlert(initialAlert)
 	if err != nil {
 		t.Errorf("unexpected error %s", err.Error())
 	}
@@ -355,11 +320,20 @@ func TestCreateAlert(t *testing.T) {
 	if alert.ID == "" {
 		t.Errorf("expected an id, but did not found anything")
 	}
+	if alert.ID != globalID {
+		t.Errorf("expected id to be %s, but found %s", globalID, alert.ID)
+	}
 	if alert.CreatedBy == "" {
 		t.Errorf("expected createdBy, but did not found anything")
 	}
+	if alert.CreatedBy != user {
+		t.Errorf("expected createdBy to be %s, but found %s", user, alert.CreatedBy)
+	}
 	if alert.UpdatedBy == "" {
 		t.Errorf("expected updatedBy, but did not found anything")
+	}
+	if alert.UpdatedBy != user {
+		t.Errorf("expected updatedBy to be %s, but found %s", user, alert.UpdatedBy)
 	}
 	if alert.Date == 0 {
 		t.Errorf("expected date, but did not found anything")
@@ -376,43 +350,14 @@ func TestCreateAlert(t *testing.T) {
 }
 
 func TestUpdateAlert(t *testing.T) {
-	ID := "123-123-123"
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var alert Alert
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-		alert.ID = ID
-		alert.CreatedBy = "admin"
-		alert.UpdatedBy = "admin"
-		alert.Date = time.Now().Unix()
-		alert.CreatedAt = time.Now().Unix()
-		alert.UpdatedAt = time.Now().Unix()
-		alert.LastSyncDate = time.Now().Unix()
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var alert Alert
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
 		if r.Method != "PATCH" {
 			t.Errorf("expected PATCH method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID {
-			t.Errorf("expected path to be /api/alert/%s, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID {
+			t.Errorf("expected path to be /api/alert/%s, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -429,6 +374,11 @@ func TestUpdateAlert(t *testing.T) {
 			t.Errorf("expected at least one Content-Type header, none was found")
 		}
 
+		var alert *Alert
+		err := json.NewDecoder(r.Body).Decode(&alert)
+		if err != nil {
+			t.Errorf("unexpected error %s", err.Error())
+		}
 		data, err := json.Marshal(alert)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -438,37 +388,47 @@ func TestUpdateAlert(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ := api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ := api.CreateAlert(initialAlert)
+	api = NewAPI(ts.URL, apiKey)
 
-	api2 := NewAPI(ts.URL, "123-123-123")
 	up := NewUpdater()
 	up.Add("Title", "This has been modified")
+	up.Add("Description", "This has been modified")
+	newAlert, err := api.UpdateAlert(alert.ID, up)
 
-	newAlert, err := api2.UpdateAlert(alert.ID, up)
 	if err != nil {
 		t.Errorf("unexpected error %s", err.Error())
 	}
-	if alertCase.ID != newAlert.ID {
+	if initialAlert.ID != newAlert.ID {
 		t.Errorf("expected ID to be the same, but it is different")
 	}
-	if alertCase.Title == newAlert.Title {
+	if initialAlert.Title == newAlert.Title {
 		t.Errorf("expected different title, but the are the same")
 	}
-}
+	if initialAlert.Description == newAlert.Description {
+		t.Errorf("expected different title, but the are the same")
+	}
 
-func TestUpdateAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	up := NewUpdater()
-	_, err := api.UpdateAlert("", up)
+	api = NewAPI(ts.URL, apiKey)
+
+	up = NewUpdater()
+	up.Add("ID", "This has been modified")
+	newAlert, err = api.UpdateAlert(alert.ID, up)
+
+	if err != nil {
+		t.Errorf("unexpected error %s", err.Error())
+	}
+	if initialAlert.ID != newAlert.ID {
+		t.Errorf("expected ID to be the same, but it is different")
+	}
+
+	up = NewUpdater()
+	_, err = api.UpdateAlert("", up)
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
 	}
@@ -478,37 +438,15 @@ func TestUpdateAlertEmpty(t *testing.T) {
 }
 
 func TestDeleteAlert(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "DELETE" {
 			t.Errorf("expected DELETE method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID {
-			t.Errorf("expected path to be /api/alert/%s, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID {
+			t.Errorf("expected path to be /api/alert/%s, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -519,32 +457,25 @@ func TestDeleteAlert(t *testing.T) {
 		}
 
 		if alert.ID == "" {
-			t.Errorf("extected ID to be %s, but found %s", ID, alert.ID)
+			t.Errorf("extected ID to be %s, but found %s", globalID, alert.ID)
 		}
 		w.Write([]byte{})
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ = api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	err := api.DeleteAlert(alert.ID)
 
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
 	}
-}
 
-func TestDeleteAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	err := api.DeleteAlert("")
+	err = api.DeleteAlert("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
@@ -555,38 +486,15 @@ func TestDeleteAlertEmpty(t *testing.T) {
 }
 
 func TestReadAlert(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.Status = "New"
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID+"/markAsRead" {
-			t.Errorf("expected path to be /api/alert/%s/markAsRead, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID+"/markAsRead" {
+			t.Errorf("expected path to be /api/alert/%s/markAsRead, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -596,7 +504,7 @@ func TestReadAlert(t *testing.T) {
 			t.Errorf("expected at least one Accept header, none was found")
 		}
 
-		alert.Status = "Ignored"
+		alert.Status = Ignored
 
 		data, err := json.Marshal(alert)
 		if err != nil {
@@ -608,32 +516,24 @@ func TestReadAlert(t *testing.T) {
 		w.Write(data)
 	}))
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alertCreated, _ := api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	alert, err := api.ReadAlert(alert.ID)
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
 	}
-	if alertCreated.Status == alert.Status {
+	if initialAlert.Status == alert.Status {
 		t.Errorf("expecting to be different from %s, but it is not", alert.Status)
 	}
-	if alert.Status != "Ignored" {
+	if alert.Status != Ignored {
 		t.Errorf("expecting to be Ignored, but found %s", alert.Status)
 	}
-}
 
-func TestReadAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	_, err := api.ReadAlert("")
+	_, err = api.ReadAlert("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
@@ -644,37 +544,15 @@ func TestReadAlertEmpty(t *testing.T) {
 }
 
 func TestUnreadAlert(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID+"/markAsUnread" {
-			t.Errorf("expected path to be /api/alert/%s/markAsRead, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID+"/markAsUnread" {
+			t.Errorf("expected path to be /api/alert/%s/markAsRead, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -684,6 +562,8 @@ func TestUnreadAlert(t *testing.T) {
 			t.Errorf("expected at least one Accept header, none was found")
 		}
 
+		alert.Status = New
+
 		data, err := json.Marshal(alert)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -693,33 +573,26 @@ func TestUnreadAlert(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ = api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	alert, err := api.UnreadAlert(alert.ID)
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
 	}
-	if alertCase.Status != alert.Status {
+	if initialAlert.Status != alert.Status {
 		t.Errorf("expecting to be different from %s, but it is not", alert.Status)
 	}
-	if alert.Status != "New" {
+	if alert.Status != New {
 		t.Errorf("expecting to be New, but found %s", alert.Status)
 	}
-}
 
-func TestUnreadAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	_, err := api.UnreadAlert("")
+	_, err = api.UnreadAlert("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
@@ -730,37 +603,15 @@ func TestUnreadAlertEmpty(t *testing.T) {
 }
 
 func TestAlertToCase(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID+"/createCase" {
-			t.Errorf("expected path to be /api/alert/%s/createCase, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID+"/createCase" {
+			t.Errorf("expected path to be /api/alert/%s/createCase, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -781,30 +632,24 @@ func TestAlertToCase(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ = api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	newAlert, err := api.AlertToCase(alert.ID)
+
 	if err != nil {
 		t.Errorf("unexpecting an error, but found %s", err.Error())
 	}
 	if newAlert.ID != alert.ID {
 		t.Errorf("expecting ID to be different, but it is not")
 	}
-}
 
-func TestAlertToCaseEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	_, err := api.AlertToCase("")
+	_, err = api.AlertToCase("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
@@ -813,38 +658,17 @@ func TestAlertToCaseEmpty(t *testing.T) {
 		t.Errorf("expecting error to be id must be provided, but found %s", err.Error())
 	}
 }
+
 func TestFollowAlert(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID+"/follow" {
-			t.Errorf("expected path to be /api/alert/%s/follow, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID+"/follow" {
+			t.Errorf("expected path to be /api/alert/%s/follow, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -865,18 +689,14 @@ func TestFollowAlert(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ = api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	newAlert, err := api.FollowAlert(alert.ID)
 	if err != nil {
 		t.Errorf("unexpecting an error, but found %s", err.Error())
@@ -884,11 +704,8 @@ func TestFollowAlert(t *testing.T) {
 	if newAlert.Follow != true {
 		t.Errorf("expecting follow to be true, but found %t", newAlert.Follow)
 	}
-}
 
-func TestFollowAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	_, err := api.FollowAlert("")
+	_, err = api.FollowAlert("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")
@@ -899,37 +716,15 @@ func TestFollowAlertEmpty(t *testing.T) {
 }
 
 func TestUnfollowAlert(t *testing.T) {
-	ID := "123-123-123"
 	var alert Alert
-	alert.ID = ID
-	alert.CreatedBy = "admin"
-	alert.UpdatedBy = "admin"
-	alert.Date = time.Now().Unix()
-	alert.CreatedAt = time.Now().Unix()
-	alert.UpdatedAt = time.Now().Unix()
-	alert.LastSyncDate = time.Now().Unix()
-	ss := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewDecoder(r.Body).Decode(&alert)
-		if err != nil {
-			t.Errorf("unexpected error %s", err.Error())
-		}
-
-		data, err := json.Marshal(alert)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-	}))
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST method, but found %s", r.Method)
 		}
-		if r.URL.Path != "/api/alert/"+ID+"/unfollow" {
-			t.Errorf("expected path to be /api/alert/%s/unfollow, but found %s", ID, r.URL.Path)
+		if r.URL.Path != "/api/alert/"+globalID+"/unfollow" {
+			t.Errorf("expected path to be /api/alert/%s/unfollow, but found %s", globalID, r.URL.Path)
 		}
 		if len(r.Header["Accept"]) >= 1 {
 			if r.Header["Accept"][0] != "application/json" {
@@ -950,18 +745,14 @@ func TestUnfollowAlert(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(data)
 	}))
+	defer ts.Close()
 
-	alertCase := NewAlert()
-	alertCase.SetTitle("Test Alert")
-	alertCase.SetDescription("Desciption for a test alert")
-	alertCase.SetSourceRef("qweqwe")
-	alertCase.SetSource("Golang")
-	alertCase.SetType("alert")
+	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, "123-123-123")
-	alert, _ = api.CreateAlert(alertCase)
+	api := NewAPI(ss.URL, apiKey)
+	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, "123-123-123")
+	api = NewAPI(ts.URL, apiKey)
 	newAlert, err := api.UnfollowAlert(alert.ID)
 	if err != nil {
 		t.Errorf("unexpecting an error, but found %s", err.Error())
@@ -969,11 +760,8 @@ func TestUnfollowAlert(t *testing.T) {
 	if newAlert.Follow != false {
 		t.Errorf("expecting follow to be false, but found %t", newAlert.Follow)
 	}
-}
 
-func TestUnfollowAlertEmpty(t *testing.T) {
-	api := NewAPI("dummy", "123-123-123")
-	_, err := api.UnfollowAlert("")
+	_, err = api.UnfollowAlert("")
 
 	if err == nil {
 		t.Errorf("expecting an error, but none found")

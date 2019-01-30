@@ -2,6 +2,7 @@ package go4th
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -34,27 +35,57 @@ func (u Updater) Del(field string, value interface{}) {
 }
 
 func (api *API) readResponseAsAlert(req *http.Request) (Alert, error) {
+	var apiError ApiError
 	var alertRes Alert
 	var buff []byte
 	_, buff, err := api.do(req)
 
-	err = json.Unmarshal(buff, &alertRes)
 	if err != nil {
-		var apiError ApiError
-		err = json.Unmarshal(buff, &apiError)
-		if err != nil {
-			return Alert{}, err
-		}
-		return Alert{}, fmt.Errorf("%s::%s", apiError.Type, apiError.Message)
+		return Alert{}, err
 	}
-	return alertRes, err
+
+	err = json.Unmarshal(buff, &apiError)
+	if err != nil {
+		return Alert{}, fmt.Errorf("unable to unmarshal response data as error: %s", err.Error())
+	}
+
+	if apiError.TableName == "" && apiError.Type == "" && len(apiError.Errors) == 0 {
+		err = json.Unmarshal(buff, &alertRes)
+		if err != nil {
+			return Alert{}, fmt.Errorf("unable to unmarshal response data: %s", err.Error())
+		}
+		return alertRes, err
+	}
+
+	return Alert{}, getError(apiError)
 }
 
 func (api *API) readResponseAsAlerts(req *http.Request) ([]Alert, error) {
-	var alerts []Alert
+	var alertsRes []Alert
 	var buff []byte
 	_, buff, err := api.do(req)
 
-	err = json.Unmarshal(buff, &alerts)
-	return alerts, err
+	if err != nil {
+		return []Alert{}, err
+	}
+
+	err = json.Unmarshal(buff, &alertsRes)
+	if err != nil {
+		return []Alert{}, fmt.Errorf("unable to unmarshal response data: %s", err.Error())
+	}
+
+	return alertsRes, err
+}
+
+func getError(apiErr ApiError) error {
+	if len(apiErr.Errors) != 0 {
+		var e string
+		e = fmt.Sprintf("%s::", apiErr.Type)
+		for _, err := range apiErr.Errors {
+			e = fmt.Sprintf("%s%s", e, err.Message)
+			break
+		}
+		return errors.New(e)
+	}
+	return nil
 }

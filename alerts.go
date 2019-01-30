@@ -9,11 +9,6 @@ import (
 // Alert is the data model for an alert.
 type Alert struct {
 	ID           string      `json:"id,omitempty"`
-	IDdb         string      `json:"_id,omitempty"`
-	Typ          string      `json:"_type,omitempty"`
-	Patent       string      `json:"_parent,omitempty"`
-	Routing      string      `json:"_routing,omitempty"`
-	Version      int         `json:"_version,omitempty"`
 	Title        string      `json:"title,omitempty"`
 	Description  string      `json:"description,omitempty"`
 	Severity     Severity    `json:"severity,omitempty"`
@@ -24,12 +19,11 @@ type Alert struct {
 	Type         string      `json:"type,omitempty"`
 	Source       string      `json:"source,omitempty"`
 	SourceRef    string      `json:"sourceRef,omitempty"`
-	Artifacts    interface{} `json:"artifacts,omitempty"`
+	Artifacts    []*Artifact `json:"artifacts,omitempty"`
 	Follow       bool        `json:"follow,omitempty"`
 	CaseTemplate string      `json:"caseTemplate,omitempty"`
 	LastSyncDate int64       `json:"lastSyncDate,omitempty"`
 	Case         string      `json:"case,omitempty"`
-	CustomFields interface{} `json:"customFields,omitempty"`
 	CreatedBy    string      `json:"createdBy,omitempty"`
 	CreatedAt    int64       `json:"createdAt,omitempty"`
 	UpdatedBy    string      `json:"updatedBy,omitempty"`
@@ -52,7 +46,7 @@ var updateKeys = []string{"TLP", "Severity", "Tags",
 	"CaseTemplate", "Title", "Description"}
 
 var keys = []string{"Date", "Status", "Follow", "LastSyncDate",
-	"Case", "CreatedBy", "CreatedAt", "UpdatedBy", "User"}
+	"Case", "CreatedBy", "CreatedAt", "UpdatedBy", "User", "ID"}
 
 /*
 	Alert methods
@@ -105,21 +99,14 @@ func (a *Alert) SetSourceRef(sr string) error {
 	return fmt.Errorf("sourceRef could not be empty")
 }
 
+// AddArtifact adds an artifact to the alert
+func (a *Alert) AddArtifact(art *Artifact) {
+	a.Artifacts = append(a.Artifacts, art)
+}
+
 /*
 	API Calls
 */
-
-// GetAlerts gets the whole list of alerts. GetAlerts returns a list of Alert or an empty
-// list. It can also return an error.
-func (api *API) GetAlerts() ([]Alert, error) {
-	path := "/api/alert"
-	req, err := api.newRequest("GET", path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return api.readResponseAsAlerts(req)
-}
 
 // GetAlert gets an specific alert. The alert ID must be provided in terms to get the alert.
 // If there is an error, an empty Alert will be returned, otherwise the alert is returned with
@@ -136,6 +123,18 @@ func (api *API) GetAlert(id string) (Alert, error) {
 	}
 
 	return api.readResponseAsAlert(req)
+}
+
+// GetAlerts gets the whole list of alerts. GetAlerts returns a list of Alert or an empty
+// list. It can also return an error.
+func (api *API) GetAlerts() ([]Alert, error) {
+	path := "/api/alert"
+	req, err := api.newRequest("GET", path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.readResponseAsAlerts(req)
 }
 
 // CreateAlert creates an alert. An alert must be provided as parameter it also needs to have
@@ -232,7 +231,7 @@ func (api *API) AlertToCase(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
-// FollowAlert switchs Follow field to true. The alert ID must be provied otherwise an error
+// FollowAlert switches Follow field to true. The alert ID must be provied otherwise an error
 // is returned.
 func (api *API) FollowAlert(id string) (Alert, error) {
 	if id == "" {
@@ -246,7 +245,7 @@ func (api *API) FollowAlert(id string) (Alert, error) {
 	return api.readResponseAsAlert(req)
 }
 
-// UnfollowAlert switchs Follow field to false. The alert ID must be provied otherwise an error
+// UnfollowAlert switches Follow field to false. The alert ID must be provied otherwise an error
 // is returned.
 func (api *API) UnfollowAlert(id string) (Alert, error) {
 	if id == "" {

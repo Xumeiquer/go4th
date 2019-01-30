@@ -17,7 +17,7 @@ type API struct {
 	apiKey     string
 }
 
-// NewAPI retuns a new API instance ready to operate with TheHive instance
+// NewAPI returns a new API instance ready to operate with TheHive instance
 func NewAPI(baseURL, apiKey string) *API {
 	u, err := url.Parse(baseURL)
 	if err != nil {
@@ -82,15 +82,18 @@ type Severity int
 type AlertStatus string
 
 const (
+	// White, Green, Amber, and Red are the accepted TLP values
 	White TLP = 0
 	Green     = 1
 	Amber     = 2
 	Red       = 3
 
+	// Low, Medium, and High are the accepted Severity values
 	Low    Severity = 1
 	Medium          = 2
 	High            = 3
 
+	// New, Updated, Ignored, and Imported are the accepted AlertStatus values
 	New      AlertStatus = "New"
 	Updated              = "Updated"
 	Ignored              = "Ignored"
@@ -99,8 +102,14 @@ const (
 
 // ApiError represents an error response from The Hive
 type ApiError struct {
-	// Type of error
-	Type string `json:"type"`
-	// Message is the error message
-	Message string `json:"message"`
+	TableName string  `json:"tableName,omitempty"`
+	Type      string  `json:"type,omitempty"`
+	Errors    []Error `json:"errors,omitempty"`
+}
+
+// Error is part of the ApiError structure and it conteins a specific error
+type Error struct {
+	Name    string `json:"name,omitempty"`
+	Type    string `json:"type,omitempty"`
+	Message string `json:"message,omitempty"`
 }
