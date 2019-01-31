@@ -42,10 +42,11 @@ func NewAlert() *Alert {
 	return alert
 }
 
-var updateKeys = []string{"TLP", "Severity", "Tags",
+var updateKeysAlert = []string{"TLP", "Severity", "Tags",
 	"CaseTemplate", "Title", "Description"}
 
-var keys = []string{"Date", "Status", "Follow", "LastSyncDate",
+// Fields that are read-only
+var keysAlert = []string{"Date", "Status", "Follow", "LastSyncDate",
 	"Case", "CreatedBy", "CreatedAt", "UpdatedBy", "User", "ID"}
 
 /*
@@ -161,7 +162,7 @@ func (api *API) UpdateAlert(id string, values map[string]interface{}) (Alert, er
 
 	newAlert := NewAlert()
 	for field, value := range values {
-		if in(field, updateKeys) || !in(field, keys) {
+		if in(field, updateKeysAlert) || !in(field, keysAlert) {
 			reflections.SetField(newAlert, field, value)
 		}
 	}

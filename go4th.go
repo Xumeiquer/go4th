@@ -81,6 +81,15 @@ type Severity int
 // AlertStatus defines the alert status
 type AlertStatus string
 
+// ResolutionStatus defines the case resolution status
+type ResolutionStatus string
+
+// ImpactStatus defines the case impact status
+type ImpactStatus string
+
+// CaseStatus defines the case status
+type CaseStatus string
+
 const (
 	// White, Green, Amber, and Red are the accepted TLP values
 	White TLP = 0
@@ -98,6 +107,20 @@ const (
 	Updated              = "Updated"
 	Ignored              = "Ignored"
 	Imported             = "Imported"
+
+	Indeterminate ResolutionStatus = "Indeterminate"
+	FalsePositive                  = "FalsePositive"
+	TruePositive                   = "TruePositive"
+	Other                          = "Other"
+	Duplicated                     = "Duplicated"
+
+	NoImpact      ImpactStatus = "NoImpact"
+	WithImpact                 = "WithImpact"
+	NotApplicable              = "NotApplicable"
+
+	Open     CaseStatus = "Open"
+	Resolved            = "Resolved"
+	Deleted             = "Deleted"
 )
 
 // ApiError represents an error response from The Hive
