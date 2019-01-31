@@ -12,7 +12,7 @@
 
 Go for The Hive is a Golang port of [TheHive4py](https://github.com/TheHive-Project/TheHive4py). This is an API client to comunicate with [TheHive](https://github.com/TheHive-Project/TheHive).
 
-## Installarion
+## Installation
 
 ```
 go get github.com/Xumeiquer/go4th
@@ -53,7 +53,7 @@ func main() {
 
 ## API implementation
 
-### Alert
+### Alert
 
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
@@ -69,6 +69,7 @@ func main() {
 |POST        |/api/alert/:alertId/unfollow            |Unfollow an alert                     |
 
 ### Case
+
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
 |GET         |/api/case                               |List cases                            |
@@ -79,7 +80,9 @@ func main() {
 |POST        |/api/case/:caseId1/_merge/:caseId2      |Merge two cases                       |
 
 ## Missing API calls
+
 ### Alert
+
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
 |POST        |/api/alert/_search                      |Find alerts                           |
@@ -88,6 +91,7 @@ func main() {
 |POST        |/api/alert/:alertId/merge/:caseId       |Merge an alert in a case              |
 
 ### Case
+
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
 |POST        |/api/case/_search                       |Find cases                            |
