@@ -79,7 +79,7 @@ func main() {
 |DELETE      |/api/case/:caseId                       |Remove a case                         |
 |POST        |/api/case/:caseId1/_merge/:caseId2      |Merge two cases                       |
 
-## Missing API calls
+## Missing API calls
 
 ### Alert
 
