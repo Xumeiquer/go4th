@@ -34,10 +34,11 @@ import (
 var (
   thehive = "http://127.0.0.1:9000"
   apiKey  = "apiKey"
+  trustSSL = true
 )
 
 func main() {
-  api := go4th.NewAPI(thehive, apiKey)
+  api := go4th.NewAPI(thehive, apiKey, trustSSL)
 
   alerts, err := api.GetAlerts()
   if err != nil {
@@ -55,102 +56,73 @@ func main() {
 
 ### Alert
 
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|GET         |/api/alert                              |List alerts                           |
-|POST        |/api/alert                              |Create an alert                       |
-|POST        |/api/alert/_search                      |Find alerts                           |
-|GET         |/api/alert/:alertId                     |Get an alert                          |
-|PATCH       |/api/alert/:alertId                     |Update an alert                       |
-|DELETE      |/api/alert/:alertId                     |Delete an alert                       |
-|POST        |/api/alert/:alertId/markAsRead          |Mark an alert as read                 |
-|POST        |/api/alert/:alertId/markAsUnread        |Mark an alert as unread               |
-|POST        |/api/alert/:alertId/createCase          |Create a case from an alert           |
-|POST        |/api/alert/:alertId/follow              |Follow an alert                       |
-|POST        |/api/alert/:alertId/unfollow            |Unfollow an alert                     |
+* [x] List alerts
+* [x] Find alerts
+* [ ] Update alerts in bulk
+* [ ] Compute stats on alerts
+* [x] Create an alert
+* [x] Get an alert
+* [x] Update an alert
+* [x] Delete an alert
+* [x] Mark an alert as read
+* [x] Mark an alert as unread
+* [x] Create a case from an alert
+* [x] Follow an alert
+* [x] Unfollow an alert
+* [ ] Merge an alert in a case
 
 ### Case
 
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|GET         |/api/case                               |List cases                            |
-|POST        |/api/case                               |Create a case                         |
-|POST        |/api/case/_search                       |Find cases                            |
-|GET         |/api/case/:caseId                       |Get a case                            |
-|PATCH       |/api/case/:caseId                       |Update a case                         |
-|DELETE      |/api/case/:caseId                       |Remove a case                         |
-|POST        |/api/case/:caseId1/_merge/:caseId2      |Merge two cases                       |
+* [x] List cases
+* [x] Find cases
+* [ ] Update cases in bulk
+* [ ] Compute stats on cases
+* [x] Create a case
+* [x] Get a case
+* [x] Update a case
+* [x] Remove a case
+* [ ] Get list of cases linked to this case
+* [x] Merge two cases
+
+### Obervable
+
+* [ ] Find observables
+* [ ] Compute stats on observables
+* [ ] Create an observable
+* [ ] Get an observable
+* [ ] Remove an observable
+* [ ] Update an observable
+* [ ] Get list of similar observables
+* [ ] Update observables in bulk
 
 ### Task
 
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|GET         |/api/case/task/:taskId                  |Get a task                            |
-|POST        |/api/case/:caseId/task                  |Create a task                         |
-|PATCH       |/api/case/task/:taskId                  |Update a task                         |
-|POST        |/api/case/task/_search                  |Find tasks                            |
-
-## Missing API calls
-
-### Alert
-
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|PATCH       |/api/alert/_bulk                        |Update alerts in bulk                 |
-|POST        |/api/alert/_stats                       |Compute stats on alerts               |
-|POST        |/api/alert/:alertId/merge/:caseId       |Merge an alert in a case              |
-
-### Case
-
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|PATCH       |/api/case/_bulk                         |Update cases in bulk                  |
-|POST        |/api/case/_stats                        |Compute stats on cases                |
-|GET         |/api/case/:caseId/links                 |Get list of cases linked to this case |
-
-### Task
-
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|POST        |/api/case/:caseId/task/_search          |Find tasks in a case (deprecated)     |
-|POST        |/api/case/task/_stats                   |Compute stats on tasks                |
-
-### Artifact
-
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|POST        |/api/case/artifact/_search              |Find observables                      |
-|POST        |/api/case/artifact/_stats               |Compute stats on observables          |
-|POST        |/api/case/:caseId/artifact              |Create an observable                  |
-|GET         |/api/case/artifact/:artifactId          |Get an observable                     |
-|DELETE      |/api/case/artifact/:artifactId          |Remove an observable                  |
-|PATCH       |/api/case/artifact/:artifactId          |Update an observable                  |
-|GET         |/api/case/artifact/:artifactId/similar  |Get list of similar observables       |
-|PATCH       |/api/case/artifact/_bulk                |Update observables in bulk            |
+* [ ] Find tasks in a case (deprecated)
+* [x] Find tasks
+* [ ] Compute stats on tasks
+* [x] Get a task
+* [x] Update a task
+* [x] Create a task
 
 ### Log
 
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|GET         |/api/case/task/:taskId/log              |Get logs of the task                  |
-|POST        |/api/case/task/:taskId/log/_search      |Find logs in specified task           |
-|POST        |/api/case/task/log/_search              |Find logs                             |
-|POST        |/api/case/task/:taskId/log              |Create a log                          |
-|PATCH       |/api/case/task/log/:logId               |Update a log                          |
-|DELETE      |/api/case/task/log/:logId               |Remove a log                          |
-|GET         |/api/case/task/log/:logId               |Get a log                             |
+* [ ] Get logs of the task
+* [ ] Find logs in specified task
+* [ ] Find logs
+* [ ] Create a log
+* [ ] Update a log
+* [ ] Remove a log
+* [ ] Get a log
 
 ### User
 
-|HTTP Method |URI                                     |Action                                |
-|------------|----------------------------------------|--------------------------------------|
-|GET         |/api/logout                             |Logout                                |
-|POST        |/api/login                              |User login                            |
-|GET         |/api/user/current                       |Get current user                      |
-|POST        |/api/user/_search                       |Find user                             |
-|POST        |/api/user                               |Create a user                         |
-|GET         |/api/user/:userId                       |Get a user                            |
-|DELETE      |/api/user/:userId                       |Delete a user                         |
-|PATCH       |/api/user/:userId                       |Update user details                   |
-|POST        |/api/user/:userId/password/set          |Set password                          |
-|POST        |/api/user/:userId/password/change       |Change password                       |
+* [ ] Logout
+* [ ] User login
+* [ ] Get current user
+* [ ] Find user
+* [ ] Create a user
+* [ ] Get a user
+* [ ] Delete a user
+* [ ] Update user details
+* [ ] Set password
+* [ ] Change password

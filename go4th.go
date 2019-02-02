@@ -2,6 +2,7 @@ package go4th
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -18,7 +19,8 @@ type API struct {
 }
 
 // NewAPI returns a new API instance ready to operate with TheHive instance
-func NewAPI(baseURL, apiKey string) *API {
+func NewAPI(baseURL, apiKey string, trustSSL bool) *API {
+	var api *API
 	u, err := url.Parse(baseURL)
 	if err != nil {
 		panic("bad base url")
@@ -26,11 +28,23 @@ func NewAPI(baseURL, apiKey string) *API {
 	if apiKey == "" {
 		panic("bad apikey")
 	}
-	api := &API{
-		baseURL:    u,
-		userAgent:  userAgent,
-		httpClient: &http.Client{},
-		apiKey:     apiKey,
+	if trustSSL {
+		api = &API{
+			baseURL:    u,
+			userAgent:  userAgent,
+			httpClient: &http.Client{},
+			apiKey:     apiKey,
+		}
+	} else {
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		api = &API{
+			baseURL:    u,
+			userAgent:  userAgent,
+			httpClient: &http.Client{Transport: tr},
+			apiKey:     apiKey,
+		}
 	}
 	return api
 }

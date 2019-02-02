@@ -173,7 +173,7 @@ func TestGetAlert(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 	alert, err := api.GetAlert(globalID)
 	if err != nil {
 		t.Errorf("unexpected error %s", err.Error())
@@ -209,7 +209,7 @@ func TestGetAlerts(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 
 	alerts, err := api.GetAlerts()
 	if err != nil {
@@ -269,7 +269,7 @@ func TestCreateAlert(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 
 	initialAlert := newAlert()
 	alert, err := api.CreateAlert(initialAlert)
@@ -352,9 +352,9 @@ func TestUpdateAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ := api.CreateAlert(initialAlert)
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 
 	up := NewUpdater()
 	up.Add("Title", "This has been modified")
@@ -374,7 +374,7 @@ func TestUpdateAlert(t *testing.T) {
 		t.Errorf("expected different title, but the are the same")
 	}
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 
 	up = NewUpdater()
 	up.Add("ID", "This has been modified")
@@ -425,10 +425,10 @@ func TestDeleteAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	err := api.DeleteAlert(alert.ID)
 
 	if err != nil {
@@ -478,10 +478,10 @@ func TestReadAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	alert, err := api.ReadAlert(alert.ID)
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
@@ -537,10 +537,10 @@ func TestUnreadAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	alert, err := api.UnreadAlert(alert.ID)
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
@@ -596,10 +596,10 @@ func TestAlertToCase(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	newAlert, err := api.AlertToCase(alert.ID)
 
 	if err != nil {
@@ -653,10 +653,10 @@ func TestFollowAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	newAlert, err := api.FollowAlert(alert.ID)
 	if err != nil {
 		t.Errorf("unexpecting an error, but found %s", err.Error())
@@ -709,10 +709,10 @@ func TestUnfollowAlert(t *testing.T) {
 
 	initialAlert := newAlert()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	alert, _ = api.CreateAlert(initialAlert)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	newAlert, err := api.UnfollowAlert(alert.ID)
 	if err != nil {
 		t.Errorf("unexpecting an error, but found %s", err.Error())

@@ -180,7 +180,7 @@ func TestGetCase(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 	cas, err := api.GetCase(globalID)
 	if err != nil {
 		t.Errorf("unexpected error %s", err.Error())
@@ -216,7 +216,7 @@ func TestGetCases(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 
 	cases, err := api.GetCases()
 	if err != nil {
@@ -274,7 +274,7 @@ func TestCreateCase(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api := NewAPI(ts.URL, apiKey)
+	api := NewAPI(ts.URL, apiKey, false)
 
 	initialCase := newCase()
 	cas, err := api.CreateCase(initialCase)
@@ -351,9 +351,9 @@ func TestUpdateCase(t *testing.T) {
 
 	initialCase := newCase()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	cas, _ := api.CreateCase(initialCase)
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 
 	up := NewUpdater()
 	up.Add("Title", "This has been modified")
@@ -373,7 +373,7 @@ func TestUpdateCase(t *testing.T) {
 		t.Errorf("expected different title, but the are the same")
 	}
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 
 	up = NewUpdater()
 	up.Add("ID", "This has been modified")
@@ -424,10 +424,10 @@ func TestDeleteCase(t *testing.T) {
 
 	initialCase := newCase()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	cas, _ = api.CreateCase(initialCase)
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	err := api.DeleteCase(cas.ID)
 
 	if err != nil {
@@ -498,14 +498,14 @@ func TestMergeCase(t *testing.T) {
 	caseA := newCase()
 	caseB := newCase()
 
-	api := NewAPI(ss.URL, apiKey)
+	api := NewAPI(ss.URL, apiKey, false)
 	casA, _ = api.CreateCase(caseA)
 	casB, _ = api.CreateCase(caseB)
 	// simulate new and different case
 	casA.ID += portfixCaseA
 	casB.ID += portfixCaseB
 
-	api = NewAPI(ts.URL, apiKey)
+	api = NewAPI(ts.URL, apiKey, false)
 	merged, err := api.MergeCase(casA.ID, casB.ID)
 	if err != nil {
 		t.Errorf("expecting error to be nil, but found %s", err.Error())
