@@ -120,6 +120,58 @@ func (api *API) readResponseAsCases(req *http.Request) ([]Case, error) {
 	return casesRes, err
 }
 
+func (api *API) readResponseAsTask(req *http.Request) (Task, error) {
+	var apiError ApiError
+	var taskRes Task
+	var buff []byte
+	_, buff, err := api.do(req)
+
+	if err != nil {
+		return Task{}, err
+	}
+
+	err = json.Unmarshal(buff, &apiError)
+	if err != nil {
+		return Task{}, fmt.Errorf("unable to unmarshal response data as error: %s", err.Error())
+	}
+
+	if apiError.TableName == "" && apiError.Type == "" && len(apiError.Errors) == 0 {
+		err = json.Unmarshal(buff, &taskRes)
+		if err != nil {
+			return Task{}, fmt.Errorf("unable to unmarshal response data: %s", err.Error())
+		}
+		return taskRes, err
+	}
+
+	return Task{}, getError(apiError)
+}
+
+func (api *API) readResponseAsTasks(req *http.Request) ([]Task, error) {
+	var apiError ApiError
+	var taskRes []Task
+	var buff []byte
+	_, buff, err := api.do(req)
+
+	if err != nil {
+		return []Task{}, err
+	}
+
+	err = json.Unmarshal(buff, &apiError)
+	if err != nil {
+		return []Task{}, fmt.Errorf("unable to unmarshal response data as error: %s", err.Error())
+	}
+
+	if apiError.TableName == "" && apiError.Type == "" && len(apiError.Errors) == 0 {
+		err = json.Unmarshal(buff, &taskRes)
+		if err != nil {
+			return []Task{}, fmt.Errorf("unable to unmarshal response data: %s", err.Error())
+		}
+		return taskRes, err
+	}
+
+	return []Task{}, getError(apiError)
+}
+
 func getError(apiErr ApiError) error {
 	if len(apiErr.Errors) != 0 {
 		var e string

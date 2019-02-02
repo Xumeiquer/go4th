@@ -51,6 +51,10 @@ func NewArtifact(dataType, data string) (*Artifact, error) {
 	return art, nil
 }
 
+/*
+	Artifact methods
+*/
+
 // SetTLP sets the TLP for the asset
 func (a *Artifact) SetTLP(tlp TLP) error {
 	if tlp != White && tlp != Green && tlp != Amber && tlp != Red {
@@ -77,3 +81,7 @@ func (a *Artifact) SetTags(tags []string) error {
 	a.Tags = tags
 	return nil
 }
+
+/*
+	API Calls
+*/

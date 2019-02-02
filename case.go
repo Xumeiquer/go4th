@@ -24,7 +24,7 @@ type Case struct {
 	Summary          string           `json:"summary,omitempty"`
 	EndDate          int64            `json:"endDate,omitempty"`
 	Metrics          interface{}      `json:"metrics,omitempty"`
-	Status           CaseStatus       `json:"Status,omitempty"`
+	Status           CaseStatus       `json:"status,omitempty"`
 	CaseID           int              `json:"caseID,omitempty"`
 	MergeInto        string           `json:"mergeInto,omitempty"`
 	MergeFrom        []string         `json:"mergeFrom,omitempty"`
@@ -75,6 +75,11 @@ func (c *Case) SetDescription(description string) error {
 		return fmt.Errorf("Description could not be empty")
 	}
 	c.Description = description
+	return nil
+}
+
+func (c *Case) SetStatus(s CaseStatus) error {
+	c.Status = s
 	return nil
 }
 
@@ -229,4 +234,15 @@ func (api *API) MergeCase(id, mergeID string) (Case, error) {
 	}
 
 	return api.readResponseAsCase(req)
+}
+
+// SearchCase searches cases based on the query
+func (api *API) SearchCase(query *Query) ([]Case, error) {
+
+	path := "/api/case/_search"
+	req, err := api.newRequest("POST", path, query)
+	if err != nil {
+		return []Case{}, err
+	}
+	return api.readResponseAsCases(req)
 }

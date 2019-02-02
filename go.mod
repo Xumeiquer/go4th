@@ -2,6 +2,7 @@ module github.com/Xumeiquer/go4th
 
 require (
 	github.com/gabriel-vasile/mimetype v0.0.0-20181202175247-077d38b2e891
+	github.com/google/uuid v1.1.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/k0kubun/pp v2.3.0+incompatible
 	github.com/mattn/go-colorable v0.0.9 // indirect

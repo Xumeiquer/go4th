@@ -259,3 +259,14 @@ func (api *API) UnfollowAlert(id string) (Alert, error) {
 	}
 	return api.readResponseAsAlert(req)
 }
+
+// SearchAlert searches alerts based on the query
+func (api *API) SearchAlert(query *Query) ([]Alert, error) {
+
+	path := "/api/alert/_search"
+	req, err := api.newRequest("POST", path, query)
+	if err != nil {
+		return []Alert{}, err
+	}
+	return api.readResponseAsAlerts(req)
+}

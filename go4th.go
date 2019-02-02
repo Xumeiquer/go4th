@@ -78,6 +78,9 @@ type TLP int
 // Severity defines the lavels of severity
 type Severity int
 
+// Status defines the Status
+type Status string
+
 // AlertStatus defines the alert status
 type AlertStatus string
 
@@ -101,6 +104,11 @@ const (
 	Low    Severity = 1
 	Medium          = 2
 	High            = 3
+
+	Waiting    Status = "Waiting"
+	InProgress        = "InProgress"
+	Completed         = "Completed"
+	Cancel            = "Cancel"
 
 	// New, Updated, Ignored, and Imported are the accepted AlertStatus values
 	New      AlertStatus = "New"

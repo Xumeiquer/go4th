@@ -1,6 +1,8 @@
 github.com/Xumeiquer/go4th v0.0.0-20190126173238-90515315dd1d h1:n0holr9tDdBi5Ofe34u5Yz/TDdhYSCPzhw60gH9dOCU=
 github.com/gabriel-vasile/mimetype v0.0.0-20181202175247-077d38b2e891 h1:W+7a8g0WhzvuiP6yNoOHMTYqDAeknvUrFtu/w1T1mO0=
 github.com/gabriel-vasile/mimetype v0.0.0-20181202175247-077d38b2e891/go.mod h1:kMJbg3SlWZCsj4R73F1WDzbT9AyGCOVmUtIxxwO5pmI=
+github.com/google/uuid v1.1.0 h1:Jf4mxPC/ziBnoPIdpQdPJ9OeiomAUHLvxmPRSPH9m4s=
+github.com/google/uuid v1.1.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 h1:uC1QfSlInpQF+M0ao65imhwqKnz3Q2z/d8PWZRMQvDM=
 github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88/go.mod h1:3w7q1U84EfirKl04SVQ/s7nPm1ZPhiXd34z40TNz36k=
 github.com/k0kubun/pp v2.3.0+incompatible h1:EKhKbi34VQDWJtq+zpsKSEhkHHs9w2P8Izbq8IhLVSo=

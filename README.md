@@ -59,6 +59,7 @@ func main() {
 |------------|----------------------------------------|--------------------------------------|
 |GET         |/api/alert                              |List alerts                           |
 |POST        |/api/alert                              |Create an alert                       |
+|POST        |/api/alert/_search                      |Find alerts                           |
 |GET         |/api/alert/:alertId                     |Get an alert                          |
 |PATCH       |/api/alert/:alertId                     |Update an alert                       |
 |DELETE      |/api/alert/:alertId                     |Delete an alert                       |
@@ -74,10 +75,20 @@ func main() {
 |------------|----------------------------------------|--------------------------------------|
 |GET         |/api/case                               |List cases                            |
 |POST        |/api/case                               |Create a case                         |
+|POST        |/api/case/_search                       |Find cases                            |
 |GET         |/api/case/:caseId                       |Get a case                            |
 |PATCH       |/api/case/:caseId                       |Update a case                         |
 |DELETE      |/api/case/:caseId                       |Remove a case                         |
 |POST        |/api/case/:caseId1/_merge/:caseId2      |Merge two cases                       |
+
+### Task
+
+|HTTP Method |URI                                     |Action                                |
+|------------|----------------------------------------|--------------------------------------|
+|GET         |/api/case/task/:taskId                  |Get a task                            |
+|POST        |/api/case/:caseId/task                  |Create a task                         |
+|PATCH       |/api/case/task/:taskId                  |Update a task                         |
+|POST        |/api/case/task/_search                  |Find tasks                            |
 
 ## Missing API calls
 
@@ -85,7 +96,6 @@ func main() {
 
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
-|POST        |/api/alert/_search                      |Find alerts                           |
 |PATCH       |/api/alert/_bulk                        |Update alerts in bulk                 |
 |POST        |/api/alert/_stats                       |Compute stats on alerts               |
 |POST        |/api/alert/:alertId/merge/:caseId       |Merge an alert in a case              |
@@ -94,7 +104,53 @@ func main() {
 
 |HTTP Method |URI                                     |Action                                |
 |------------|----------------------------------------|--------------------------------------|
-|POST        |/api/case/_search                       |Find cases                            |
 |PATCH       |/api/case/_bulk                         |Update cases in bulk                  |
 |POST        |/api/case/_stats                        |Compute stats on cases                |
 |GET         |/api/case/:caseId/links                 |Get list of cases linked to this case |
+
+### Task
+
+|HTTP Method |URI                                     |Action                                |
+|------------|----------------------------------------|--------------------------------------|
+|POST        |/api/case/:caseId/task/_search          |Find tasks in a case (deprecated)     |
+|POST        |/api/case/task/_stats                   |Compute stats on tasks                |
+
+### Artifact
+
+|HTTP Method |URI                                     |Action                                |
+|------------|----------------------------------------|--------------------------------------|
+|POST        |/api/case/artifact/_search              |Find observables                      |
+|POST        |/api/case/artifact/_stats               |Compute stats on observables          |
+|POST        |/api/case/:caseId/artifact              |Create an observable                  |
+|GET         |/api/case/artifact/:artifactId          |Get an observable                     |
+|DELETE      |/api/case/artifact/:artifactId          |Remove an observable                  |
+|PATCH       |/api/case/artifact/:artifactId          |Update an observable                  |
+|GET         |/api/case/artifact/:artifactId/similar  |Get list of similar observables       |
+|PATCH       |/api/case/artifact/_bulk                |Update observables in bulk            |
+
+### Log
+
+|HTTP Method |URI                                     |Action                                |
+|------------|----------------------------------------|--------------------------------------|
+|GET         |/api/case/task/:taskId/log              |Get logs of the task                  |
+|POST        |/api/case/task/:taskId/log/_search      |Find logs in specified task           |
+|POST        |/api/case/task/log/_search              |Find logs                             |
+|POST        |/api/case/task/:taskId/log              |Create a log                          |
+|PATCH       |/api/case/task/log/:logId               |Update a log                          |
+|DELETE      |/api/case/task/log/:logId               |Remove a log                          |
+|GET         |/api/case/task/log/:logId               |Get a log                             |
+
+### User
+
+|HTTP Method |URI                                     |Action                                |
+|------------|----------------------------------------|--------------------------------------|
+|GET         |/api/logout                             |Logout                                |
+|POST        |/api/login                              |User login                            |
+|GET         |/api/user/current                       |Get current user                      |
+|POST        |/api/user/_search                       |Find user                             |
+|POST        |/api/user                               |Create a user                         |
+|GET         |/api/user/:userId                       |Get a user                            |
+|DELETE      |/api/user/:userId                       |Delete a user                         |
+|PATCH       |/api/user/:userId                       |Update user details                   |
+|POST        |/api/user/:userId/password/set          |Set password                          |
+|POST        |/api/user/:userId/password/change       |Change password                       |
