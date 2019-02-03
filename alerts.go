@@ -270,3 +270,19 @@ func (api *API) SearchAlert(query *Query) ([]Alert, error) {
 	}
 	return api.readResponseAsAlerts(req)
 }
+
+// MergeAlertIntoCase merges data from an alrt into case
+func (api *API) MergeAlertIntoCase(alertID, caseID string) (Case, error) {
+	if alertID == "" {
+		return Case{}, fmt.Errorf("alert id could not be empty")
+	}
+	if caseID == "" {
+		return Case{}, fmt.Errorf("case id could not be empty")
+	}
+	path := "/api/alert/" + alertID + "/merge/" + caseID
+	req, err := api.newRequest("POST", path, nil)
+	if err != nil {
+		return Case{}, err
+	}
+	return api.readResponseAsCase(req)
+}

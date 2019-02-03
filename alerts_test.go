@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -728,5 +729,71 @@ func TestUnfollowAlert(t *testing.T) {
 	}
 	if err.Error() != "id must be provided" {
 		t.Errorf("expecting error to be id must be provided, but found %s", err.Error())
+	}
+}
+
+func TestMergeAlertIntoCase(t *testing.T) {
+	var alert Alert
+	var cas Case
+	alertID := "asdf"
+	caseID := "ghjk"
+	alertDescription := "to be merged"
+	ss := httptest.NewServer(newAlertHandler)
+	defer ss.Close()
+	sc := httptest.NewServer(newCaseHandler)
+	defer sc.Close()
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("expected POST method, but found %s", r.Method)
+		}
+		path := strings.Split(r.URL.Path, "/")
+		if len(path) != 6 {
+			t.Errorf("expected path to have 5 parts, but found %d", len(path))
+		}
+		if path[3] != alertID {
+			t.Errorf("expected path to be /api/alert/%s/merge/%s, but found %s", alertID, caseID, path[2])
+		}
+		if path[5] != caseID {
+			t.Errorf("expected path to be /api/alert/%s/merge/%s, but found %s", alertID, caseID, path[2])
+		}
+		if len(r.Header["Accept"]) >= 1 {
+			if r.Header["Accept"][0] != "application/json" {
+				t.Errorf("expected Accept to be application/json, but found %s", r.Header["Accept"][0])
+			}
+		} else {
+			t.Errorf("expected at least one Accept header, none was found")
+		}
+		cas := newCase()
+		cas.SetDescription(alertDescription)
+		data, err := json.Marshal(cas)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
+	}))
+	defer ts.Close()
+
+	initialAlert := newAlert()
+	initialAlert.SetDescription(alertDescription)
+
+	api := NewAPI(ss.URL, apiKey, false)
+	alert, _ = api.CreateAlert(initialAlert)
+	alert.ID = alertID
+	initialCase := newCase()
+
+	api = NewAPI(sc.URL, apiKey, false)
+	cas, _ = api.CreateCase(initialCase)
+	cas.ID = caseID
+
+	api = NewAPI(ts.URL, apiKey, false)
+	newCase, err := api.MergeAlertIntoCase(alert.ID, cas.ID)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if newCase.Description != alertDescription {
+		t.Errorf("expecting description to be %s, but found %s", alertDescription, newCase.Description)
 	}
 }

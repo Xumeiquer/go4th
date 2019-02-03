@@ -69,7 +69,7 @@ func main() {
 * [x] Create a case from an alert
 * [x] Follow an alert
 * [x] Unfollow an alert
-* [ ] Merge an alert in a case
+* [x] Merge an alert in a case
 
 ### Case
 
