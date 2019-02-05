@@ -19,7 +19,7 @@ func TestAddArtifact(t *testing.T) {
 	}
 }
 
-func TestSetTLP(t *testing.T) {
+func TestSetTLPArtifact(t *testing.T) {
 	art, err := NewArtifact("file", "./testData/thehive.txt")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -64,7 +64,7 @@ func TestSetMessage(t *testing.T) {
 	}
 }
 
-func TestSetTags(t *testing.T) {
+func TestSetTagsArtifact(t *testing.T) {
 	art, err := NewArtifact("file", "./testData/thehive.txt")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())

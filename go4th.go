@@ -110,39 +110,39 @@ type CaseStatus string
 const (
 	// White, Green, Amber, and Red are the accepted TLP values
 	White TLP = 0
-	Green     = 1
-	Amber     = 2
-	Red       = 3
+	Green TLP = 1
+	Amber TLP = 2
+	Red   TLP = 3
 
 	// Low, Medium, and High are the accepted Severity values
 	Low    Severity = 1
-	Medium          = 2
-	High            = 3
+	Medium Severity = 2
+	High   Severity = 3
 
 	Waiting    Status = "Waiting"
-	InProgress        = "InProgress"
-	Completed         = "Completed"
-	Cancel            = "Cancel"
+	InProgress Status = "InProgress"
+	Completed  Status = "Completed"
+	Cancel     Status = "Cancel"
 
 	// New, Updated, Ignored, and Imported are the accepted AlertStatus values
 	New      AlertStatus = "New"
-	Updated              = "Updated"
-	Ignored              = "Ignored"
-	Imported             = "Imported"
+	Updated  AlertStatus = "Updated"
+	Ignored  AlertStatus = "Ignored"
+	Imported AlertStatus = "Imported"
 
 	Indeterminate ResolutionStatus = "Indeterminate"
-	FalsePositive                  = "FalsePositive"
-	TruePositive                   = "TruePositive"
-	Other                          = "Other"
-	Duplicated                     = "Duplicated"
+	FalsePositive ResolutionStatus = "FalsePositive"
+	TruePositive  ResolutionStatus = "TruePositive"
+	Other         ResolutionStatus = "Other"
+	Duplicated    ResolutionStatus = "Duplicated"
 
 	NoImpact      ImpactStatus = "NoImpact"
-	WithImpact                 = "WithImpact"
-	NotApplicable              = "NotApplicable"
+	WithImpact    ImpactStatus = "WithImpact"
+	NotApplicable ImpactStatus = "NotApplicable"
 
 	Open     CaseStatus = "Open"
-	Resolved            = "Resolved"
-	Deleted             = "Deleted"
+	Resolved CaseStatus = "Resolved"
+	Deleted  CaseStatus = "Deleted"
 )
 
 // ApiError represents an error response from The Hive

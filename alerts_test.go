@@ -144,6 +144,124 @@ func TestSetSourceRefAlert(t *testing.T) {
 	}
 }
 
+func TestSetCaseTemplate(t *testing.T) {
+	alert := NewAlert()
+	casetpl := "testTemplate"
+
+	err := alert.SetCaseTemplate(casetpl)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if alert.CaseTemplate != casetpl {
+		t.Errorf("expecting Case Template to be %s, but found %s", casetpl, alert.CaseTemplate)
+	}
+}
+
+func TestSetFollow(t *testing.T) {
+	alert := NewAlert()
+	follow := true
+
+	err := alert.SetFollow(follow)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if alert.Follow != follow {
+		t.Errorf("expecting follow to be %t, but found %t", follow, alert.Follow)
+	}
+}
+
+func TestSetArtifacts(t *testing.T) {
+	var artifacts []*Artifact
+	alert := NewAlert()
+
+	data, err := NewArtifact("string", "123")
+	if err != nil {
+		t.Errorf("unexpecting error: %s", err.Error())
+	}
+
+	artifacts = append(artifacts, data)
+
+	data, err = NewArtifact("string", "asd")
+	if err != nil {
+		t.Errorf("unexpecting error: %s", err.Error())
+	}
+
+	artifacts = append(artifacts, data)
+
+	err = alert.SetArtifacts(artifacts)
+	if err != nil {
+		t.Errorf("expecting no error, nut found %s", err.Error())
+	}
+	if len(alert.Artifacts) != len(artifacts) {
+		t.Errorf("expecting artifacts to have %d elements, but found %d", len(alert.Artifacts), len(artifacts))
+	}
+
+	err = alert.SetArtifacts([]*Artifact{})
+	if err == nil {
+		t.Errorf("expectig and error artifacts could not be empty, but none found")
+	}
+}
+
+func TestSetStatus(t *testing.T) {
+	alert := NewAlert()
+	status := Updated
+
+	err := alert.SetStatus(status)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if alert.Status != status {
+		t.Errorf("expecting tlp to be %s, but found %s", status, alert.Status)
+	}
+}
+
+func TestSetTLPAlert(t *testing.T) {
+	alert := NewAlert()
+	tlp := Red
+
+	err := alert.SetTLP(tlp)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if alert.TLP != tlp {
+		t.Errorf("expecting tlp to be %d, but found %d", tlp, alert.TLP)
+	}
+}
+
+func TestSetTagsAlert(t *testing.T) {
+	alert := NewAlert()
+	tags := []string{"one", "two"}
+
+	err := alert.SetTags(tags)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if len(alert.Tags) != len(tags) {
+		t.Errorf("expecting tags to have %d elements, but found %d", len(tags), len(alert.Tags))
+	}
+
+	err = alert.SetTags([]string{})
+	if err == nil {
+		t.Errorf("expecting to have an error, but none found")
+	}
+	if err.Error() != "tags could not be empty" {
+		t.Errorf("expecting error to be tags could not be empty, but found %s", err.Error())
+	}
+}
+
+func TestSetSeverity(t *testing.T) {
+	alert := NewAlert()
+	severity := Low
+
+	err := alert.SetSeverity(severity)
+	if err != nil {
+		t.Errorf("expecting error to be nil, but found %s", err.Error())
+	}
+	if alert.Severity != Low {
+		t.Errorf("expecting severity to be %d, but found %d", severity, alert.Severity)
+	}
+}
+
 func TestGetAlert(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {

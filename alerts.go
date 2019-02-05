@@ -72,6 +72,34 @@ func (a *Alert) SetDescription(d string) error {
 	return fmt.Errorf("description could not be empty")
 }
 
+// SetSeverity sets alert's severity.
+func (a *Alert) SetSeverity(severity Severity) error {
+	a.Severity = severity
+	return nil
+}
+
+// SetTags sets alert's tags list. Tags couldn't be empty slice, otherwise an error will
+// be returned
+func (a *Alert) SetTags(tags []string) error {
+	if len(tags) == 0 {
+		return fmt.Errorf("tags could not be empty")
+	}
+	a.Tags = tags
+	return nil
+}
+
+// SetTLP sets alert's TLP.
+func (a *Alert) SetTLP(tlp TLP) error {
+	a.TLP = tlp
+	return nil
+}
+
+// SetStatus sets alert's status.
+func (a *Alert) SetStatus(status AlertStatus) error {
+	a.Status = status
+	return nil
+}
+
 // SetType sets alert's type. Type couldn't be an empty string, otherwise an error will be returned
 func (a *Alert) SetType(t string) error {
 	if t != "" {
@@ -103,6 +131,31 @@ func (a *Alert) SetSourceRef(sr string) error {
 // AddArtifact adds an artifact to the alert
 func (a *Alert) AddArtifact(art *Artifact) {
 	a.Artifacts = append(a.Artifacts, art)
+}
+
+// SetArtifacts sets alert's artifacts. Artifacts couldn't be an empty list. Otherwise an
+// error will be returned
+func (a *Alert) SetArtifacts(artifacts []*Artifact) error {
+	if len(artifacts) == 0 {
+		return fmt.Errorf("artifacts could not be empty")
+	}
+	a.Artifacts = artifacts
+	return nil
+}
+
+// SetFollow sets alert's follow value.
+func (a *Alert) SetFollow(follow bool) error {
+	a.Follow = follow
+	return nil
+}
+
+// SetCaseTemplate sets alert's case template.
+func (a *Alert) SetCaseTemplate(casetpl string) error {
+	if casetpl == "" {
+		return fmt.Errorf("case template could not be empty")
+	}
+	a.CaseTemplate = casetpl
+	return nil
 }
 
 /*
