@@ -1,5 +1,6 @@
 env:
   - GO111MODULE=on
+  - CODECOV_TOKEN=d69c06fd-3c3c-4938-b816-e438e9f994aa
 
 language: go
 go:
@@ -13,4 +14,7 @@ matrix:
 
 script:
   - go get -t -v ./...
-  - go test -v -race -cover ./...
+  - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
