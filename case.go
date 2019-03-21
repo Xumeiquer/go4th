@@ -42,6 +42,7 @@ func NewCase() *Case {
 	c = new(Case)
 	c.Severity = Medium
 	c.StartDate = time.Now().Unix()
+	c.CreatedAt = time.Now().Unix()
 	c.Flag = false
 	c.TLP = Amber
 	c.Tags = []string{}
@@ -75,11 +76,6 @@ func (c *Case) SetDescription(description string) error {
 		return fmt.Errorf("Description could not be empty")
 	}
 	c.Description = description
-	return nil
-}
-
-func (c *Case) SetStatus(s CaseStatus) error {
-	c.Status = s
 	return nil
 }
 
@@ -122,6 +118,33 @@ func (c *Case) SetTags(tags []string) error {
 		return fmt.Errorf("Tags could not be empty")
 	}
 	c.Tags = tags
+	return nil
+}
+
+// SetResolutionStatus sets Case's resolution status
+func (c *Case) SetResolutionStatus(resolution ResolutionStatus) error {
+	c.ResolutionStatus = resolution
+	return nil
+}
+
+// SetImpactStatus sets Case's impact status
+func (c *Case) SetImpactStatus(impact ImpactStatus) error {
+	c.ImpactStatus = impact
+	return nil
+}
+
+// SetSummary sets Case's summary
+func (c *Case) SetSummary(summary string) error {
+	if summary == "" {
+		return fmt.Errorf("Summary could not be empty")
+	}
+	c.Summary = summary
+	return nil
+}
+
+// SetStatus sets Case's status
+func (c *Case) SetStatus(s CaseStatus) error {
+	c.Status = s
 	return nil
 }
 
@@ -203,7 +226,11 @@ func (api *API) DeleteCase(id string) error {
 		return fmt.Errorf("id must be provided")
 	}
 	path := "/api/case/" + id
-	_, err := api.newRequest("DELETE", path, nil)
+	req, err := api.newRequest("DELETE", path, nil)
+	if err != nil {
+		return err
+	}
+	_, _, err = api.do(req)
 	if err != nil {
 		return err
 	}

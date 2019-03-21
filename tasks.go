@@ -8,21 +8,21 @@ import (
 
 // Task represents a Task
 type Task struct {
-	ID          string `json:"id,omitempty"`
-	Title       string `json:"title,omitempty"`
-	Description string `json:"description,omitempty"`
-	Status      Status `json:"status,omitempty"`
-	Flag        bool   `json:"flag,omitempty"`
-	Group       string `json:"group,omitempty"`
-	Owner       string `json:"owner,omitempty"`
-	Order       int    `json:"order,omitempty"`
-	StartDate   int64  `json:"startDate,omitempty"`
-	EndDate     int64  `json:"endDate,omitempty"`
-	CreatedBy   string `json:"createdBy,omitempty"`
-	CreatedAt   int64  `json:"createdAt,omitempty"`
-	UpdatedBy   string `json:"updatedBy,omitempty"`
-	UpdatedAt   int64  `json:"updatedAt,omitempty"`
-	User        string `json:"user,omitempty"`
+	ID          string     `json:"id,omitempty"`
+	Title       string     `json:"title,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Status      TaskStatus `json:"status,omitempty"`
+	Flag        bool       `json:"flag,omitempty"`
+	Group       string     `json:"group,omitempty"`
+	Owner       string     `json:"owner,omitempty"`
+	Order       int        `json:"order,omitempty"`
+	StartDate   int64      `json:"startDate,omitempty"`
+	EndDate     int64      `json:"endDate,omitempty"`
+	CreatedBy   string     `json:"createdBy,omitempty"`
+	CreatedAt   int64      `json:"createdAt,omitempty"`
+	UpdatedBy   string     `json:"updatedBy,omitempty"`
+	UpdatedAt   int64      `json:"updatedAt,omitempty"`
+	User        string     `json:"user,omitempty"`
 }
 
 // NewTask will return a new task with default values defined
@@ -51,7 +51,7 @@ func (t *Task) SetTitle(title string) error {
 }
 
 // SetStatus sets task's status
-func (t *Task) SetStatus(s Status) error {
+func (t *Task) SetStatus(s TaskStatus) error {
 	t.Status = s
 	return nil
 }

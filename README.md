@@ -33,7 +33,7 @@ import (
 )
 
 var (
-  thehive = "http://127.0.0.1:9000"
+  thehive = "https://127.0.0.1:9000"
   apiKey  = "apiKey"
   trustSSL = true
 )
@@ -87,18 +87,18 @@ func main() {
 
 ### Obervable
 
-* [ ] Find observables
-* [ ] Compute stats on observables
-* [ ] Create an observable
-* [ ] Get an observable
-* [ ] Remove an observable
+* [x] Find observables
+* [x] Compute stats on observables
+* [x] Create an observable
+* [x] Get an observable
+* [x] Remove an observable
 * [ ] Update an observable
-* [ ] Get list of similar observables
+* [x] Get list of similar observables
 * [ ] Update observables in bulk
 
 ### Task
 
-* [ ] Find tasks in a case (deprecated)
+* [ ] Find tasks in a case (deprecated) - Will not be implemented
 * [x] Find tasks
 * [ ] Compute stats on tasks
 * [x] Get a task

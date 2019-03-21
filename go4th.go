@@ -92,8 +92,8 @@ type TLP int
 // Severity defines the lavels of severity
 type Severity int
 
-// Status defines the Status
-type Status string
+// TaskStatus defines the Status
+type TaskStatus string
 
 // AlertStatus defines the alert status
 type AlertStatus string
@@ -119,10 +119,10 @@ const (
 	Medium Severity = 2
 	High   Severity = 3
 
-	Waiting    Status = "Waiting"
-	InProgress Status = "InProgress"
-	Completed  Status = "Completed"
-	Cancel     Status = "Cancel"
+	Waiting    TaskStatus = "Waiting"
+	InProgress TaskStatus = "InProgress"
+	Completed  TaskStatus = "Completed"
+	Cancel     TaskStatus = "Cancel"
 
 	// New, Updated, Ignored, and Imported are the accepted AlertStatus values
 	New      AlertStatus = "New"

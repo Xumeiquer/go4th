@@ -5,15 +5,16 @@ language: go
 go:
   - "1.10.x"
   - "1.11.x"
-  - master
+  - "1.12.x"
+  - tip
 
 matrix:
   allow_failures:
-    - go: master
+    - go: tip
 
 script:
   - go get -t -v ./...
   - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -t d69c06fd-3c3c-4938-b816-e438e9f994aa
+  - bash <(curl -s https://codecov.io/bash) -t $CODECOV_API_KEY

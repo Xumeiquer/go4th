@@ -106,6 +106,11 @@ type Type struct {
 	Type interface{} `json:"_type,omitempty"`
 }
 
+// Status will construct a query to filter by status
+type Status struct {
+	Status interface{} `json:"status,omitempty"`
+}
+
 // String will construct a query to filter by string
 type String struct {
 	String interface{} `json:"_string,omitempty"`
@@ -286,6 +291,12 @@ func (q *Query) Type(typ interface{}) (Type, error) {
 	return Type{typ}, nil
 }
 
+// Status returns a Status object
+func (q *Query) Status(str interface{}) (Status, error) {
+	return Status{str}, nil
+}
+
+// String returns a String object
 func (q *Query) String(str interface{}) (String, error) {
 	return String{str}, nil
 }

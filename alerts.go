@@ -236,7 +236,11 @@ func (api *API) DeleteAlert(id string) error {
 		return fmt.Errorf("id must be provided")
 	}
 	path := "/api/alert/" + id
-	_, err := api.newRequest("DELETE", path, nil)
+	req, err := api.newRequest("DELETE", path, nil)
+	if err != nil {
+		return err
+	}
+	_, _, err = api.do(req)
 	if err != nil {
 		return err
 	}
