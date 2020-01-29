@@ -36,7 +36,7 @@ func NewArtifact(dataType, data string) (*Artifact, error) {
 			if err != nil {
 				return nil, fmt.Errorf("unable to open/read artifact %s", data)
 			}
-			mime, _ := mimetype.Detect(dat)
+			mime  := mimetype.Detect(dat)
 			filename := path.Base(data)
 			encodedData := base64.StdEncoding.EncodeToString(dat)
 
