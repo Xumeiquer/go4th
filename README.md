@@ -127,3 +127,5 @@ func main() {
 * [ ] Update user details
 * [ ] Set password
 * [ ] Change password
+
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M625UW0)
